@@ -26,7 +26,6 @@ import org.mozilla.focus.session.VisibilityLifeCycleCallback
 import org.mozilla.focus.telemetry.CrashReporterWrapper
 import org.mozilla.focus.telemetry.TelemetrySessionObserver
 import org.mozilla.focus.telemetry.TelemetryWrapper
-import org.mozilla.focus.utils.AdjustHelper
 import org.mozilla.focus.utils.AppConstants
 import org.mozilla.focus.utils.EXPERIMENTS_BASE_URL
 import org.mozilla.focus.utils.EXPERIMENTS_BUCKET_NAME
@@ -73,7 +72,7 @@ class FocusApplication : LocaleAwareApplication(), CoroutineScope {
             registerForLocaleUpdates(this@FocusApplication)
         }
 
-        AdjustHelper.setupAdjustIfNeeded(this@FocusApplication)
+
 
         visibilityLifeCycleCallback = VisibilityLifeCycleCallback(this@FocusApplication)
         registerActivityLifecycleCallbacks(visibilityLifeCycleCallback)
