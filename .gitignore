@@ -61,3 +61,4 @@ Screengrabfile
 # Sentry token file
 .sentry_token
 
+app/focusAarch64/release/output.json
