@@ -62,3 +62,4 @@ Screengrabfile
 .sentry_token
 
 app/focusAarch64/release/output.json
+app/focusAarch64/debug/output.json
