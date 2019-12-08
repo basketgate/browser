@@ -100,6 +100,7 @@ import org.mozilla.focus.web.IWebView
 import org.mozilla.focus.widget.AnimatedProgressBar
 import org.mozilla.focus.widget.FloatingEraseButton
 import org.mozilla.focus.widget.FloatingSessionsButton
+import org.mozilla.focus.widget.FloatingWalmartButton
 import java.lang.ref.WeakReference
 import java.net.MalformedURLException
 import java.net.URL
@@ -127,6 +128,7 @@ class BrowserFragment : WebFragment(), LifecycleObserver, View.OnClickListener,
     private var swipeRefresh: SwipeRefreshLayout? = null
     private var menuWeakReference: WeakReference<BrowserMenu>? = WeakReference<BrowserMenu>(null)
 
+    private var walmartButton:FloatingWalmartButton?=null
     /**
      * Container for custom video views shown in fullscreen mode.
      */
@@ -238,7 +240,7 @@ class BrowserFragment : WebFragment(), LifecycleObserver, View.OnClickListener,
         statusBar = view.findViewById(R.id.status_bar_background)
 
         popupTint = view.findViewById(R.id.popup_tint)
-
+        walmartButton = view.findViewById<FloatingWalmartButton>(R.id.walmart)
         urlView = view.findViewById<View>(R.id.display_url) as TextView
         urlView!!.setOnLongClickListener(this)
 
@@ -349,6 +351,8 @@ class BrowserFragment : WebFragment(), LifecycleObserver, View.OnClickListener,
     }
 
     private fun initialiseNormalBrowserUi(view: View) {
+        Log.d(FRAGMENT_TAG,"Dima : initialiseNormalBrowserUi")
+
         val eraseButton = view.findViewById<FloatingEraseButton>(R.id.erase)
         eraseButton.setOnClickListener(this)
 
@@ -388,7 +392,9 @@ class BrowserFragment : WebFragment(), LifecycleObserver, View.OnClickListener,
         // - View.GONE: doesn't work because the layout-behaviour makes the FAB visible again when scrolling.
         // - Adding at runtime: works, but then we need to use a separate layout file (and you need
         //   to set some attributes programatically, same as ViewStub).
+        Log.d(FRAGMENT_TAG,"Dima : initialiseCustomTabUi")
         val erase = view.findViewById<FloatingEraseButton>(R.id.erase)
+
         val eraseContainer = erase.parent as ViewGroup
         eraseContainer.removeView(erase)
 
@@ -483,9 +489,16 @@ class BrowserFragment : WebFragment(), LifecycleObserver, View.OnClickListener,
     @Suppress("ComplexMethod")
     override fun createCallback(): IWebView.Callback {
         return SessionCallbackProxy(session, object : IWebView.Callback {
-            override fun onPageStarted(url: String) {}
+            override fun onPageStarted(url: String) {
 
-            override fun onPageFinished(isSecure: Boolean) {}
+
+                Log.d(FRAGMENT_TAG,"Dima : onPageStarted")
+            }
+
+            override fun onPageFinished(isSecure: Boolean) {
+                Log.d(FRAGMENT_TAG,"Dima : onPageFinished")
+                walmartButton!!.show()
+            }
 
             override fun onSecurityChanged(isSecure: Boolean, host: String, organization: String) {}
 
@@ -520,6 +533,7 @@ class BrowserFragment : WebFragment(), LifecycleObserver, View.OnClickListener,
             }
 
             override fun onEnterFullScreen(callback: IWebView.FullscreenCallback, view: View?) {
+                Log.d(FRAGMENT_TAG,"Dima : onEnterFullScreen")
                 fullscreenCallback = callback
                 isFullscreen = true
 
@@ -548,6 +562,7 @@ class BrowserFragment : WebFragment(), LifecycleObserver, View.OnClickListener,
             }
 
             override fun onExitFullScreen() {
+                Log.d(FRAGMENT_TAG,"Dima : onEnterFullScreen")
                 if (AppConstants.isGeckoBuild) {
                     appbar?.setExpanded(true, true)
                     (getWebView() as? NestedGeckoView)?.isNestedScrollingEnabled = true
@@ -716,7 +731,7 @@ class BrowserFragment : WebFragment(), LifecycleObserver, View.OnClickListener,
                 .addToBackStack(null)
                 .add(R.id.crash_container, crashReporterFragment, CrashReporterFragment.FRAGMENT_TAG)
                 .commit()
-
+        Log.d(FRAGMENT_TAG,"Dima : crash_container.visibility = View.VISIBLE")
         crash_container.visibility = View.VISIBLE
         tabs.hide()
         erase.hide()
@@ -734,7 +749,7 @@ class BrowserFragment : WebFragment(), LifecycleObserver, View.OnClickListener,
                 .beginTransaction()
                 .remove(fragment)
                 .commit()
-
+        Log.d(FRAGMENT_TAG,"Dima : crash_container.visibility = View.GONE")
         crash_container.visibility = View.GONE
         tabs.show()
         erase.show()
@@ -1012,6 +1027,7 @@ class BrowserFragment : WebFragment(), LifecycleObserver, View.OnClickListener,
 
     @Suppress("ComplexMethod")
     override fun onClick(view: View) {
+        Log.d("BrowserFragment","Dima : onClick : " +view.id)
         when (view.id) {
             R.id.menuView -> {
                 val menu = BrowserMenu(activity, this, session.customTabConfig)
@@ -1033,6 +1049,7 @@ class BrowserFragment : WebFragment(), LifecycleObserver, View.OnClickListener,
             }
 
             R.id.erase -> {
+                Log.d("Browser","Dima : onClick Erase")
                 TelemetryWrapper.eraseEvent()
 
                 erase()

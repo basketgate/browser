@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import mozilla.components.browser.session.Session
 import mozilla.components.browser.session.SessionManager
@@ -254,14 +255,17 @@ open class MainActivity : LocaleAwareAppCompatActivity() {
     protected fun showBrowserScreenForCurrentSession() {
         val currentSession = currentSessionForActivity
         val fragmentManager = supportFragmentManager
+        Log.d("MainActivity","Dima: showBrowserScreenForCurrentSession" )
 
         val fragment = fragmentManager.findFragmentByTag(BrowserFragment.FRAGMENT_TAG) as BrowserFragment?
+        Log.d("MainActivity","Dima: browserFragment " +fragment )
         if (fragment != null && fragment.session == currentSession) {
             // There's already a BrowserFragment displaying this session.
             return
         }
 
         val browserFragment = BrowserFragment.createForSession(currentSession)
+        Log.d("MainActivity","Dima: new browserFragment " +browserFragment )
         val isNewSession = previousSessionCount < components.sessionManager.sessions.count() && previousSessionCount > 0
 
         if ((currentSession.source == Session.Source.ACTION_SEND ||
@@ -280,6 +284,7 @@ open class MainActivity : LocaleAwareAppCompatActivity() {
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
         return if (name == IWebView::class.java.name) {
             // Inject our implementation of IWebView from the WebViewProvider.
+            Log.d("MainActivity","Dima: Inject WebViewProvider create !!!" )
             WebViewProvider.create(this, attrs)
         } else super.onCreateView(name, context, attrs)
     }

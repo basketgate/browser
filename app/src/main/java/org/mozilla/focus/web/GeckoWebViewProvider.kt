@@ -177,6 +177,7 @@ class GeckoWebViewProvider : IWebViewProvider {
         }
 
         override fun setCallback(callback: IWebView.Callback?) {
+            Log.d(TAG, "Dima : setCallback  : " + callback)
             this.callback = callback
         }
 
@@ -208,17 +209,23 @@ class GeckoWebViewProvider : IWebViewProvider {
         }
 
         override fun stopLoading() {
+            Log.d(TAG, "Dima : stopLoading URL : 1")
             geckoSession.stop()
             callback?.onPageFinished(isSecure)
+            callback!!.onPageFinished(isSecure)
+            Log.d(TAG, "Dima : stopLoading URL : 2 ")
         }
 
         override fun getUrl(): String? {
+           // Log.d(TAG, "Dima : getUrl URL : " + currentUrl)
             return currentUrl
         }
 
         override fun loadUrl(url: String) {
+            Log.d(TAG, "Dima : Loading URL : " + url)
             currentUrl = url
             geckoSession.loadUri(currentUrl)
+
         }
 
         override fun cleanup() {
@@ -419,6 +426,7 @@ class GeckoWebViewProvider : IWebViewProvider {
 
                 override fun onCloseRequest(geckoSession: GeckoSession) {
                     // Ignore this callback
+                    Log.d(TAG, "Dima : onCloseRequest URL : ")
                 }
 
                 override fun onFirstComposite(geckoSession: GeckoSession) {}
@@ -429,12 +437,14 @@ class GeckoWebViewProvider : IWebViewProvider {
         private fun createProgressDelegate(): GeckoSession.ProgressDelegate {
             return object : GeckoSession.ProgressDelegate {
                 override fun onProgressChange(session: GeckoSession, progress: Int) {
+                    Log.d(TAG, "Dima : onProgressChange  success : "+progress)
                     if (progress == PROGRESS_100) {
                         if (UrlUtils.isLocalizedContent(url)) {
                             // When the url is a localized content, then the page is secure
                             isSecure = true
                         }
                         callback?.onPageFinished(isSecure)
+
                     } else {
                         callback?.onProgress(progress)
                     }
@@ -447,12 +457,13 @@ class GeckoWebViewProvider : IWebViewProvider {
                 }
 
                 override fun onPageStop(session: GeckoSession, success: Boolean) {
+                    Log.d(TAG, "Dima : onPageStop  success : "+success + " : " + url)
                     if (success) {
                         if (UrlUtils.isLocalizedContent(url)) {
                             // When the url is a localized content, then the page is secure
                             isSecure = true
                         }
-
+                        Log.d(TAG, "Dima : onPageStop  success : "+success + " : " + callback)
                         callback?.onPageFinished(isSecure)
                     }
                 }
@@ -484,8 +495,9 @@ class GeckoWebViewProvider : IWebViewProvider {
                     session: GeckoSession,
                     request: NavigationDelegate.LoadRequest
                 ): GeckoResult<AllowOrDeny>? {
-                    val uri = Uri.parse(request.uri)
 
+                    val uri = Uri.parse(request.uri)
+                    Log.d(TAG, "Dima : createNavigationDelegate : onLoadRequest : "+uri)
                     val complete = when {
                         request.target == GeckoSession.NavigationDelegate.TARGET_WINDOW_NEW -> {
                             geckoSession.loadUri(request.uri)
@@ -520,6 +532,7 @@ class GeckoWebViewProvider : IWebViewProvider {
                     uri: String?,
                     webRequestError: WebRequestError
                 ): GeckoResult<String> {
+                    Log.d(TAG, "Dima : createNavigationDelegate : onLoadError : "+uri)
                     ErrorPages.createErrorPage(
                         context,
                         geckoErrorToErrorType(webRequestError.code),
@@ -533,11 +546,13 @@ class GeckoWebViewProvider : IWebViewProvider {
                     session: GeckoSession,
                     uri: String
                 ): GeckoResult<GeckoSession>? {
+                    Log.d(TAG, "Dima : createNavigationDelegate : onNewSession : "+uri)
                     // Prevent new sessions to be created from onLoadRequest
                     throw IllegalStateException()
                 }
 
                 override fun onLocationChange(session: GeckoSession, url: String?) {
+                    Log.d(TAG, "Dima : onLocationChange URL: " + url)
                     var desiredUrl = url
                     // Save internal data: urls we should override to present focus:about, focus:rights
                     if (isLoadingInternalUrl) {
@@ -562,10 +577,12 @@ class GeckoWebViewProvider : IWebViewProvider {
                 }
 
                 override fun onCanGoBack(session: GeckoSession, canGoBack: Boolean) {
+                    Log.d(TAG, "Dima : onCanGoBack URL: " + url)
                     this@GeckoWebView.canGoBack = canGoBack
                 }
 
                 override fun onCanGoForward(session: GeckoSession, canGoForward: Boolean) {
+                    Log.d(TAG, "Dima : onCanGoForward URL: " + url)
                     this@GeckoWebView.canGoForward = canGoForward
                 }
             }
@@ -688,6 +705,7 @@ class GeckoWebViewProvider : IWebViewProvider {
             encoding: String,
             historyURL: String
         ) {
+            Log.d(TAG, "Dima : loadData : "+data)
             isLoadingInternalUrl = historyURL == LocalizedContent.URL_RIGHTS || historyURL ==
                     LocalizedContent.URL_ABOUT
             geckoSession.loadData(data.toByteArray(Charsets.UTF_8), mimeType)

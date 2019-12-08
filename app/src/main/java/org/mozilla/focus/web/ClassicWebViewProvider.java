@@ -13,6 +13,7 @@ import android.os.StrictMode;
 import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
@@ -76,12 +77,14 @@ public class ClassicWebViewProvider implements IWebViewProvider {
     }
 
     private static void setupView(WebView webView) {
+        Log.d("ClassicWebViewProvider","Dima : setupView");
         webView.setVerticalScrollBarEnabled(true);
         webView.setHorizontalScrollBarEnabled(true);
     }
 
     @SuppressLint("SetJavaScriptEnabled") // We explicitly want to enable JavaScript
     private void configureDefaultSettings(Context context, WebSettings settings) {
+        Log.d("ClassicWebViewProvider","Dima : configureDefaultSettings");
         settings.setJavaScriptEnabled(true);
 
         // Needs to be enabled to display some HTML5 sites that use local storage

@@ -70,6 +70,23 @@
                 app:fabSize="normal"
                 app:layout_dodgeInsetEdges="bottom"/>
 
+            <org.mozilla.focus.widget.FloatingWalmartButton
+                android:id="@+id/walmart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginBottom="@dimen/floating_action_button_margin"
+                android:layout_marginEnd="@dimen/floating_action_button_margin"
+                android:elevation="4dp"
+                android:src="@drawable/ic_developer"
+                app:backgroundTint="@color/colorErase"
+                app:rippleColor="@color/colorErasePressed"
+                android:visibility="gone"
+                app:fabSize="normal"
+                app:layout_behavior="org.mozilla.focus.widget.FloatingWalmartButtonBehavior"
+                android:contentDescription="Walmart"
+                app:layout_dodgeInsetEdges="left"/>
+
             <org.mozilla.focus.widget.FloatingEraseButton
                 android:id="@+id/erase"
                 android:layout_width="wrap_content"

@@ -4,7 +4,9 @@
 
 package org.mozilla.focus.session
 
+import android.util.Log
 import android.view.View
+import androidx.core.net.toUri
 
 import org.mozilla.focus.web.Download
 import org.mozilla.focus.web.IWebView
@@ -34,7 +36,12 @@ class SessionCallbackProxy(private val session: Session, private val delegate: I
         }
     }
 
+
+
     override fun onPageFinished(isSecure: Boolean) {
+        Log.d("SessionCallbackProxy","Dima : onPageFinished : " + session.url.toUri().host)
+        val host=session.url.toUri().host;
+        if (host!=null && host.equals("basketgate.ai"))delegate.onPageFinished(isSecure)
         session.progress = MAXIMUM_PROGRESS
         session.loading = false
         if (!isDownload || !AppConstants.isGeckoBuild) {
