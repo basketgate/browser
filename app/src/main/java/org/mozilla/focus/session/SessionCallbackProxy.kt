@@ -23,6 +23,7 @@ class SessionCallbackProxy(private val session: Session, private val delegate: I
     var isDownload = false
 
     override fun onPageStarted(url: String) {
+        delegate.onPageStarted(url)
         session.loading = true
 
         // We are always setting the progress to 5% when a new page starts loading. Otherwise it might
@@ -39,9 +40,8 @@ class SessionCallbackProxy(private val session: Session, private val delegate: I
 
 
     override fun onPageFinished(isSecure: Boolean) {
-        Log.d("SessionCallbackProxy","Dima : onPageFinished : " + session.url.toUri().host)
-        val host=session.url.toUri().host;
-        if (host!=null && host.equals("basketgate.ai"))delegate.onPageFinished(isSecure)
+        Log.d("SessionCallbackProxy","Dima : onPageFinished : " + session)
+        delegate.onPageFinished(isSecure)
         session.progress = MAXIMUM_PROGRESS
         session.loading = false
         if (!isDownload || !AppConstants.isGeckoBuild) {

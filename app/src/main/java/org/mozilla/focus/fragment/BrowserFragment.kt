@@ -49,6 +49,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.net.toUri
 import kotlinx.android.synthetic.main.browser_display_toolbar.*
 import kotlinx.android.synthetic.main.fragment_browser.*
 import kotlinx.coroutines.CoroutineScope
@@ -493,11 +494,16 @@ class BrowserFragment : WebFragment(), LifecycleObserver, View.OnClickListener,
 
 
                 Log.d(FRAGMENT_TAG,"Dima : onPageStarted")
+                walmartButton!!.hide()
             }
 
             override fun onPageFinished(isSecure: Boolean) {
-                Log.d(FRAGMENT_TAG,"Dima : onPageFinished")
-                walmartButton!!.show()
+                val host=session.url.toUri().host;
+                Log.d(FRAGMENT_TAG,"Dima : onPageFinished " + host)
+                if (host!=null && host.equals("grocery.walmart.com"))
+                    walmartButton!!.show()
+                else
+                    walmartButton!!.hide()
             }
 
             override fun onSecurityChanged(isSecure: Boolean, host: String, organization: String) {}
