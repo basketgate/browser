@@ -15,7 +15,7 @@ import android.view.animation.AnimationUtils;
 import org.mozilla.focus.R;
 
 public class FloatingEraseButton extends FloatingActionButton {
-    private boolean keepHidden;
+    private final boolean keepHidden=true;
 
     public FloatingEraseButton(Context context) {
         super(context);
@@ -34,7 +34,7 @@ public class FloatingEraseButton extends FloatingActionButton {
         final FloatingActionButtonBehavior behavior = (FloatingActionButtonBehavior) params.getBehavior();
         AccessibilityManager accessibilityManager = (AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
 
-        keepHidden = tabCount != 1;
+        //keepHidden = tabCount != 1;
 
         if (behavior != null) {
             if (accessibilityManager != null && accessibilityManager.isTouchExplorationEnabled()) {
